@@ -31,7 +31,7 @@
 
 //     $("#myform").submit(function() {
 //         $.ajax(this.action, {
-//             data: $(":text", this).serializeArray),
+//             data: $(":text", this).serializeArray(),
 //             files: $(":file", this),
 //             processData: false
 //         }).complete(function(data) {
@@ -69,7 +69,7 @@
 (function($, undefined) {
 
   // Register an iframe transport, independent of requested data type. It will
-  // only activate when the "files" option has been set to non-empty list of
+  // only activate when the "files" option has been set to a non-empty list of
   // enabled file inputs.
   $.ajaxTransport("+*", function(options, origOptions, jqXHR) {
     var form = null,
@@ -135,11 +135,17 @@
         addedFields.push($("<input type='hidden'>").attr("name", name)
           .attr("value", value).appendTo(form));
       });
+
+      // Add a hidden `X-Requested-With` field with the value `IFrame` to the
+      // field, to help server-side code to determine that the upload happened
+      // through this transport.
       addedFields.push($("<input type='hidden' name='X-Requested-With'>")
         .attr("value", "IFrame").appendTo(form));
 
       return {
 
+        // The `send` function is called by jQuery when the request should be
+        // sent.
         send: function(headers, completeCallback) {
           iframe = $("<iframe src='javascript:false;' name='iframe-" + $.now()
             + "' style='display:none'></iframe>");
@@ -149,7 +155,9 @@
           iframe.bind("load", function() {
 
             // The second load event gets fired when the response to the form
-            // submission is received.
+            // submission is received. The implementation detects whether the
+            // actual payload is embedded in a `<textarea>` element, and
+            // prepares the required conversions to be made in that case.
             iframe.unbind("load").bind("load", function() {
               var doc = this.contentWindow ? this.contentWindow.document :
                 (this.contentDocument ? this.contentDocument : this.document),
@@ -182,6 +190,8 @@
           iframe.insertAfter(form);
         },
 
+        // The `abort` function is called by jQuery when the request should be
+        // aborted.
         abort: function() {
           if (iframe !== null) {
             iframe.unbind("load").attr("src", "javascript:false;");
