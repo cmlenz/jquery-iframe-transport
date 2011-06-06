@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jQuery Iframe Transport Demo</title>
+    <link rel="stylesheet" href="layout.css">
+  </head>
+  <body>
+    <h1>jQuery Iframe Transport Demo</h1>
+    <div id="help">
+      <p>This is a simple example showing a file upload field that gets
+      transmitted asynchronously using the iframe transport. Just choose one or
+      more files, and they will be uploaded to the server (but not stored). After
+      one upload has completed, you can upload more files.</p>
+      <p>Please note that this example needs to run via
+      <a href="http://nodejs.org/">node.js</a>, as uploads require a server-side
+      component to work properly.</p>
+    </div>
+    <form id="upload" action="/upload" method="post" enctype="multipart/form-data">
+      <div>
+        <label>
+          Select files to upload:
+          <input type="file" name="file" multiple>
+        </label>
+      </div>
+    </form>
+    <ul id="filelist">
+    </ul>
+  </body>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+  <script src="jquery.iframe-transport.js"></script>
+  <script src="client.js"></script>
+</html>

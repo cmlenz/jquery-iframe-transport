@@ -1,0 +1,10 @@
+This demo shows the basic transport functionality by allowing file uploads to
+be done asynchronously (that is, without a full page load).
+
+To run this example, you'll need node.js and npm, and the node modules
+"formidable" and "paperboy".
+
+    $ npm install formidable paperboy
+    $ node server.js
+
+Then load the URL http://localhost:8080/ and do some uploading.
