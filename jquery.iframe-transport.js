@@ -163,17 +163,10 @@
                 (this.contentDocument ? this.contentDocument : this.document),
                 root = doc.documentElement ? doc.documentElement : doc.body,
                 textarea = root.getElementsByTagName("textarea")[0],
-                dataType = textarea ? textarea.getAttribute("data-type") : null,
-                headers = {},
-                contents = {};
-              if (dataType) {
-                headers = "Content-Type: " + dataType;
-                contents.text = textarea.value;
-              } else {
-                headers = "Content-Type: text/html";
-                contents.text = root ? root.innerHTML : null;
-              }
-              completeCallback(200, "OK", contents, headers);
+                type = textarea ? textarea.getAttribute("data-type") : null;
+              completeCallback(200, "OK", {
+                text: type ? textarea.value : root ? root.innerHTML : null
+              }, "Content-Type: " + (type ? type : "text/html"));
               setTimeout(cleanUp, 50);
             });
 
