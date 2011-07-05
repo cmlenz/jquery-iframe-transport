@@ -3,7 +3,8 @@
     var form = $(this.form);
     form.addClass("loading");
     $.ajax(form.prop("action"), {
-      files: form.find(":file")
+      files: form.find(":file"),
+      iframe: true
     }).complete(function() {
       form.removeClass("loading");
     }).success(function(data) {

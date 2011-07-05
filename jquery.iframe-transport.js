@@ -10,13 +10,16 @@
 
 // ## Usage
 
-// To use this plugin, you simply add a `files` option to an `$.ajax()` call,
-// where the value of that option is a jQuery object or a list of DOM elements
-// containing one or more `<input type="file">` elements:
+// To use this plugin, you simply add a `iframe` option with the value `true`
+// to the Ajax settings an `$.ajax()` call, and specify the file fields to
+// include in the submssion using the `files` option, which can be a selector,
+// jQuery object, or a list of DOM elements containing one or more
+// `<input type="file">` elements:
 
 //     $("#myform").submit(function() {
 //         $.ajax(this.action, {
-//             files: $(":file", this)
+//             files: $(":file", this),
+//             iframe: true
 //         }).complete(function(data) {
 //             console.log(data);
 //         });
@@ -33,6 +36,7 @@
 //         $.ajax(this.action, {
 //             data: $(":text", this).serializeArray(),
 //             files: $(":file", this),
+//             iframe: true,
 //             processData: false
 //         }).complete(function(data) {
 //             console.log(data);
@@ -68,10 +72,18 @@
 
 (function($, undefined) {
 
+  // Register a prefilter that checks whether the `iframe` option is set, and
+  // switches to the iframe transport if it is `true`.
+  $.ajaxPrefilter(function(options, origOptions, jqXHR) {
+    if (options.iframe) {
+      return "iframe";
+    }
+  });
+
   // Register an iframe transport, independent of requested data type. It will
   // only activate when the "files" option has been set to a non-empty list of
   // enabled file inputs.
-  $.ajaxTransport("+*", function(options, origOptions, jqXHR) {
+  $.ajaxTransport("iframe", function(options, origOptions, jqXHR) {
     var form = null,
         iframe = null,
         origAction = null,
@@ -94,6 +106,11 @@
           .attr("enctype", origEnctype || "");
       iframe.attr("src", "javascript:false;").remove();
     }
+
+    // Remove "iframe" from the data types list so that further processing is
+    // based on the content type returned by the server, without attempting an
+    // (unsupported) conversion from "iframe" to the actual type.
+    options.dataTypes.shift();
 
     if (files.length) {
       // Determine the form the file fields belong to, and make sure they all
@@ -166,7 +183,7 @@
                 type = textarea ? textarea.getAttribute("data-type") : null;
               completeCallback(200, "OK", {
                 text: type ? textarea.value : root ? root.innerHTML : null
-              }, "Content-Type: " + (type ? type : "text/html"));
+              }, "Content-Type: " + (type || "text/html"));
               setTimeout(cleanUp, 50);
             });
 
