@@ -150,14 +150,14 @@
           value = value.value;
         }
         addedFields.push($("<input type='hidden'>").attr("name", name)
-          .attr("value", value).appendTo(form));
+          .attr("value", value).appendTo(form)[0]);
       });
 
       // Add a hidden `X-Requested-With` field with the value `IFrame` to the
       // field, to help server-side code to determine that the upload happened
       // through this transport.
       addedFields.push($("<input type='hidden' name='X-Requested-With'>")
-        .attr("value", "IFrame").appendTo(form));
+        .attr("value", "IFrame").appendTo(form)[0]);
 
       return {
 
