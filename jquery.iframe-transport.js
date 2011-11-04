@@ -101,9 +101,11 @@
       $(disabledFields).each(function() {
         this.disabled = false;
       });
-      form.attr("action", origAction || "")
-          .attr("target", origTarget || "")
-          .attr("enctype", origEnctype || "");
+      form.attr({
+        "action":  origAction  || "",
+        "target":  origTarget  || "",
+        "enctype": origEnctype || ""
+      });
       iframe.attr("src", "javascript:false;").remove();
     }
 
@@ -149,23 +151,25 @@
           name = value.name;
           value = value.value;
         }
-        addedFields.push($("<input type='hidden'>").attr("name", name)
-          .attr("value", value).appendTo(form)[0]);
+        addedFields.push($("<input type='hidden'>").attr({
+          "name":  name,
+          "value": value
+        }).appendTo(form)[0]);
       });
 
       // Add a hidden `X-Requested-With` field with the value `IFrame` to the
       // field, to help server-side code to determine that the upload happened
       // through this transport.
-      addedFields.push($("<input type='hidden' name='X-Requested-With'>")
-        .attr("value", "IFrame").appendTo(form)[0]);
+      addedFields.push($("<input type='hidden' name='X-Requested-With'>").
+        attr("value", "IFrame").appendTo(form)[0]);
 
       return {
 
         // The `send` function is called by jQuery when the request should be
         // sent.
         send: function(headers, completeCallback) {
-          iframe = $("<iframe src='javascript:false;' name='iframe-" + $.now()
-            + "' style='display:none'></iframe>");
+          iframe = $("<iframe src='javascript:false;' name='iframe-" + $.now() +
+            "' style='display:none'></iframe>");
 
           // The first load event gets fired after the iframe has been injected
           // into the DOM, and is used to prepare the actual submission.
@@ -189,10 +193,11 @@
 
             // Now that the load handler has been set up, reconfigure and
             // submit the form.
-            form.attr("action", options.url)
-              .attr("target", iframe.attr("name"))
-              .attr("enctype", "multipart/form-data")
-              .get(0).submit();
+            form.attr({
+              "action":  options.url,
+              "target":  iframe.attr("name"),
+              "enctype": "multipart/form-data"
+            }).get(0).submit();
           });
 
           // After everything has been set up correctly, the iframe gets
