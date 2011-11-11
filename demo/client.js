@@ -1,13 +1,15 @@
 (function($) {
-  $("form :file").change(function() {
-    var form = $(this.form);
-    form.addClass("loading");
+  "use strict";
+
+  $("form").on("change", ":file", function() {
+    var form = $(this.form).addClass("loading");
     $.ajax(form.prop("action"), {
       files: form.find(":file"),
-      iframe: true
-    }).complete(function() {
+      iframe: true,
+      dataType: "json"
+    }).always(function() {
       form.removeClass("loading");
-    }).success(function(data) {
+    }).done(function(data) {
       $.each(data.files, function(idx, file) {
         $("<li><b></b> (<span class='size'></span>, <span class='mime'></span>)</li>")
           .find("b").text(file.filename).end()
@@ -28,4 +30,5 @@
     }
     return size.toFixed(0) + " " + units[idx];
   }
+
 })(jQuery);

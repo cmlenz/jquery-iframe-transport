@@ -5,17 +5,14 @@ var formidable = require("formidable"),
 
 http.createServer(function(req, res) {
   if (req.url == "/upload" && req.method.toUpperCase() == "POST") {
-    var form = new formidable.IncomingForm();
-    var files = [];
+    var form = new formidable.IncomingForm(),
+        files = [];
     form.on("file", function(field, file) {
-      console.log("Received file", file.name);
       files.push(file);
     });
     form.on("end", function() {
-      res.writeHead(200, {"Content-Type": "text/html"});
-      res.end("<textarea data-type='application/json'>" +
-        JSON.stringify({files: files}) +
-      "</textarea>");
+      res.writeHead(200, {"Content-Type": "application/json"});
+      res.end(JSON.stringify({files: files}));
     });
     form.parse(req);
   } else if (req.url == "/jquery.iframe-transport.js") {
