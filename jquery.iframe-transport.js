@@ -115,15 +115,6 @@
       form = $("<form enctype='multipart/form-data' method='post'></form>").
         hide().attr({action: options.url, target: name});
 
-      // Move the file fields into the hidden form, but first remember their
-      // original locations in the document by replacing them with disabled
-      // clones. This should also avoid introducing unwanted changes to the
-      // page layout during submission.
-      markers = files.after(function(idx) {
-        return $(this).clone().prop("disabled", true);
-      }).next();
-      files.appendTo(form);
-
       // If there is any additional data specified via the `data` option,
       // we add it as hidden fields to the form. This (currently) requires
       // the `processData` option to be set to false so that the data doesn't
@@ -145,6 +136,15 @@
       // through this transport.
       $("<input type='hidden' value='IFrame' name='X-Requested-With'>").
         appendTo(form);
+
+      // Move the file fields into the hidden form, but first remember their
+      // original locations in the document by replacing them with disabled
+      // clones. This should also avoid introducing unwanted changes to the
+      // page layout during submission.
+      markers = files.after(function(idx) {
+        return $(this).clone().prop("disabled", true);
+      }).next();
+      files.appendTo(form);
 
       return {
 
