@@ -1,8 +1,8 @@
 // This [jQuery](http://jquery.com/) plugin implements an `<iframe>`
 // [transport](http://api.jquery.com/extending-ajax/#Transports) so that
 // `$.ajax()` calls support the uploading of files using standard HTML file
-// input fields. This is done by switching the exchange from `XMLHttpRequest` to
-// a hidden `iframe` element containing a form that is submitted.
+// input fields. This is done by switching the exchange from `XMLHttpRequest`
+// to a hidden `iframe` element containing a form that is submitted.
 
 // The [source for the plugin](http://github.com/cmlenz/jquery-iframe-transport)
 // is available on [Github](http://github.com/) and dual licensed under the MIT
@@ -29,8 +29,8 @@
 // the form the file field belongs to, will disable any form fields not
 // explicitly included, submit that form, and process the response.
 
-// If you want to include other form fields in the form submission, include them
-// in the `data` option, and set the `processData` option to `false`:
+// If you want to include other form fields in the form submission, include
+// them in the `data` option, and set the `processData` option to `false`:
 
 //     $("#myform").submit(function() {
 //         $.ajax(this.action, {
@@ -63,10 +63,10 @@
 // ### Compatibility
 
 // This plugin has primarily been tested on Safari 5, Firefox 4, and Internet
-// Explorer all the way back to version 6. While I haven't found any issues with
-// it so far, I'm fairly sure it still doesn't work around all the quirks in all
-// different browsers. But the code is still pretty simple overall, so you
-// should be able to fix it and contribute a patch :)
+// Explorer all the way back to version 6. While I haven't found any issues
+// with it so far, I'm fairly sure it still doesn't work around all the quirks
+// in all different browsers. But the code is still pretty simple overall, so
+// you should be able to fix it and contribute a patch :)
 
 // ## Annotated Source
 
@@ -86,26 +86,18 @@
   $.ajaxTransport("iframe", function(options, origOptions, jqXHR) {
     var form = null,
         iframe = null,
-        origAction = null,
-        origTarget = null,
-        origEnctype = null,
-        addedFields = [],
-        disabledFields = [],
-        files = $(options.files).filter(":file:enabled");
+        name = "iframe-" + $.now(),
+        files = $(options.files).filter(":file:enabled"),
+        markers = null;
 
     // This function gets called after a successful submission or an abortion
     // and should revert all changes made to the page to enable the
     // submission via this transport.
     function cleanUp() {
-      $(addedFields).remove();
-      $(disabledFields).each(function() {
-        this.disabled = false;
+      markers.replaceWith(function(idx) {
+        return files.get(idx);
       });
-      form.attr({
-        "action":  origAction  || "",
-        "target":  origTarget  || "",
-        "enctype": origEnctype || ""
-      });
+      form.remove();
       iframe.attr("src", "javascript:false;").remove();
     }
 
@@ -115,29 +107,17 @@
     options.dataTypes.shift();
 
     if (files.length) {
-      // Determine the form the file fields belong to, and make sure they all
-      // actually belong to the same form.
-      files.each(function() {
-        if (form !== null && this.form !== form) {
-          jQuery.error("All file fields must belong to the same form");
-        }
-        form = this.form;
-      });
-      form = $(form);
+      form = $("<form enctype='multipart/form-data' method='post'></form>").
+        hide().attr({action: options.url, target: name});
 
-      // Store the original form attributes that we'll be replacing temporarily.
-      origAction = form.attr("action");
-      origTarget = form.attr("target");
-      origEnctype = form.attr("enctype");
-
-      // We need to disable all other inputs in the form so that they don't get
-      // included in the submitted data unexpectedly.
-      form.find(":input:not(:submit)").each(function() {
-        if (!this.disabled && (this.type != "file" || files.index(this) < 0)) {
-          this.disabled = true;
-          disabledFields.push(this);
-        }
-      });
+      // Move the file fields into the hidden form, but first remember their
+      // original locations in the document by replacing them with disabled
+      // clones. This should also avoid introducing unwanted changes to the
+      // page layout during submission.
+      markers = files.after(function(idx) {
+        return $(this).clone().prop("disabled", true);
+      }).next();
+      files.appendTo(form);
 
       // If there is any additional data specified via the `data` option,
       // we add it as hidden fields to the form. This (currently) requires
@@ -151,24 +131,22 @@
           name = value.name;
           value = value.value;
         }
-        addedFields.push($("<input type='hidden'>").attr({
-          "name":  name,
-          "value": value
-        }).appendTo(form)[0]);
+        $("<input type='hidden'>").attr({name:  name, value: value}).
+          appendTo(form);
       });
 
       // Add a hidden `X-Requested-With` field with the value `IFrame` to the
       // field, to help server-side code to determine that the upload happened
       // through this transport.
-      addedFields.push($("<input type='hidden' name='X-Requested-With'>").
-        attr("value", "IFrame").appendTo(form)[0]);
+      $("<input type='hidden' value='IFrame' name='X-Requested-With'>").
+        appendTo(form);
 
       return {
 
         // The `send` function is called by jQuery when the request should be
         // sent.
         send: function(headers, completeCallback) {
-          iframe = $("<iframe src='javascript:false;' name='iframe-" + $.now() +
+          iframe = $("<iframe src='javascript:false;' name='" + name +
             "' style='display:none'></iframe>");
 
           // The first load event gets fired after the iframe has been injected
@@ -193,16 +171,12 @@
 
             // Now that the load handler has been set up, reconfigure and
             // submit the form.
-            form.attr({
-              "action":  options.url,
-              "target":  iframe.attr("name"),
-              "enctype": "multipart/form-data"
-            }).get(0).submit();
+            form[0].submit();
           });
 
           // After everything has been set up correctly, the iframe gets
           // injected into the DOM so that the submission can be initiated.
-          iframe.insertAfter(form);
+          $("body").append(form, iframe);
         },
 
         // The `abort` function is called by jQuery when the request should be
