@@ -43,22 +43,26 @@
 //         });
 //     });
 
-// ### The Server Side
+// ### Response Data Types
 
-// If the response is not HTML or XML, you (unfortunately) need to apply some
-// trickery on the server side. To send back a JSON payload, send back an HTML
-// `<textarea>` element with a `data-type` attribute that contains the MIME
-// type, and put the actual payload in the textarea:
+// As the transport does not have access to the HTTP headers of the server
+// response, it is not as simple to make use of the automatic content type
+// detection provided by jQuery as with regular XHR. If you can't set the
+// expected response data type (for example because it may vary), you will
+// need to employ a workaround on the server side: Send back an HTML document
+// containing just a `<textarea>` element with a `data-type` attribute that
+// specifies the MIME type, and put the actual payload in the textarea:
 
 //     <textarea data-type="application/json">
 //       {"ok": true, "message": "Thanks so much"}
 //     </textarea>
 
-// The iframe transport plugin will detect this and attempt to apply the same
-// conversions that jQuery applies to regular responses. That means for the
-// example above you should get a Javascript object as the `data` parameter of
-// the `complete` callback, with the properties `ok: true` and
-// `message: "Thanks so much"`.
+// The iframe transport plugin will detect this and pass the value of the
+// `data-type` attribute on to jQuery as if it was the "Content-Type" response
+// header, thereby enabling the same kind of conversions that jQuery applies
+// to regular responses. For the example above you should get a Javascript
+// object as the `data` parameter of the `complete` callback, with the
+// properties `ok: true` and `message: "Thanks so much"`.
 
 // ### Compatibility
 
@@ -71,6 +75,7 @@
 // ## Annotated Source
 
 (function($, undefined) {
+  "use strict";
 
   // Register a prefilter that checks whether the `iframe` option is set, and
   // switches to the iframe transport if it is `true`.
@@ -124,7 +129,7 @@
       // the `processData` option to be set to false so that the data doesn't
       // get serialized to a string.
       if (typeof(options.data) === "string" && options.data.length > 0) {
-        jQuery.error("data must not be serialized");
+        $.error("data must not be serialized");
       }
       $.each(options.data || {}, function(name, value) {
         if ($.isPlainObject(value)) {
@@ -162,11 +167,17 @@
                 (this.contentDocument ? this.contentDocument : this.document),
                 root = doc.documentElement ? doc.documentElement : doc.body,
                 textarea = root.getElementsByTagName("textarea")[0],
-                type = textarea ? textarea.getAttribute("data-type") : null;
-              completeCallback(200, "OK", {
-                text: type ? textarea.value : root ? root.innerHTML : null
-              }, "Content-Type: " + (type || "text/html"));
-              setTimeout(cleanUp, 50);
+                type = textarea ? textarea.getAttribute("data-type") : null,
+                content = {
+                  html: root.innerHTML,
+                  text: type ?
+                    textarea.value :
+                    root ? (root.textContent || root.innerText) : null
+                };
+              cleanUp();
+              completeCallback(200, "OK", content, type ?
+                ("Content-Type: " + type) :
+                null);
             });
 
             // Now that the load handler has been set up, reconfigure and
