@@ -10,7 +10,7 @@
 
 // ## Usage
 
-// To use this plugin, you simply add a `iframe` option with the value `true`
+// To use this plugin, you simply add an `iframe` option with the value `true`
 // to the Ajax settings an `$.ajax()` call, and specify the file fields to
 // include in the submssion using the `files` option, which can be a selector,
 // jQuery object, or a list of DOM elements containing one or more
@@ -64,13 +64,28 @@
 // object as the `data` parameter of the `complete` callback, with the
 // properties `ok: true` and `message: "Thanks so much"`.
 
+// ### Handling Server Errors
+
+// Another problem with using an `iframe` for file uploads is that it is
+// impossible for the javascript code to determine the HTTP status code of the
+// servers response. Effectively, all of the calls you make will look like they
+// are getting successful responses, and thus invoke the `done()` or
+// `complete()` callbacks. You can only determine communicate problems using
+// the content of the response payload. For example, consider using a JSON
+// response such as the following to indicate a problem with an uploaded file:
+
+//     <textarea data-type="application/json">
+//       {"ok": false, "message": "Please only upload reasonably sized files."}
+//     </textarea>
+
 // ### Compatibility
 
-// This plugin has primarily been tested on Safari 5, Firefox 4, and Internet
-// Explorer all the way back to version 6. While I haven't found any issues
-// with it so far, I'm fairly sure it still doesn't work around all the quirks
-// in all different browsers. But the code is still pretty simple overall, so
-// you should be able to fix it and contribute a patch :)
+// This plugin has primarily been tested on Safari 5 (or later), Firefox 4 (or
+// later), and Internet Explorer (all the way back to version 6). While I
+// haven't found any issues with it so far, I'm fairly sure it still doesn't
+// work around all the quirks in all different browsers. But the code is still
+// pretty simple overall, so you should be able to fix it and contribute a
+// patch :)
 
 // ## Annotated Source
 
@@ -78,16 +93,16 @@
   "use strict";
 
   // Register a prefilter that checks whether the `iframe` option is set, and
-  // switches to the iframe transport if it is `true`.
+  // switches to the "iframe" data type if it is `true`.
   $.ajaxPrefilter(function(options, origOptions, jqXHR) {
     if (options.iframe) {
       return "iframe";
     }
   });
 
-  // Register an iframe transport, independent of requested data type. It will
-  // only activate when the "files" option has been set to a non-empty list of
-  // enabled file inputs.
+  // Register a transport for the "iframe" data type. It will only activate
+  // when the "files" option has been set to a non-empty list of enabled file
+  // inputs.
   $.ajaxTransport("iframe", function(options, origOptions, jqXHR) {
     var form = null,
         iframe = null,
@@ -180,13 +195,13 @@
                 null);
             });
 
-            // Now that the load handler has been set up, reconfigure and
-            // submit the form.
+            // Now that the load handler has been set up, submit the form.
             form[0].submit();
           });
 
-          // After everything has been set up correctly, the iframe gets
-          // injected into the DOM so that the submission can be initiated.
+          // After everything has been set up correctly, the form and iframe
+          // get injected into the DOM so that the submission can be
+          // initiated.
           $("body").append(form, iframe);
         },
 
