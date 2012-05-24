@@ -142,14 +142,14 @@
           name = value.name;
           value = value.value;
         }
-        $("<input type='hidden'>").attr({name:  name, value: value}).
+        $("<input type='hidden' />").attr({name:  name, value: value}).
           appendTo(form);
       });
 
       // Add a hidden `X-Requested-With` field with the value `IFrame` to the
       // field, to help server-side code to determine that the upload happened
       // through this transport.
-      $("<input type='hidden' value='IFrame' name='X-Requested-With'>").
+      $("<input type='hidden' value='IFrame' name='X-Requested-With' />").
         appendTo(form);
 
       // Move the file fields into the hidden form, but first remember their
@@ -167,7 +167,7 @@
         // sent.
         send: function(headers, completeCallback) {
           iframe = $("<iframe src='javascript:false;' name='" + name +
-            "' style='display:none'></iframe>");
+            "' id='" + name + "' style='display:none'></iframe>");
 
           // The first load event gets fired after the iframe has been injected
           // into the DOM, and is used to prepare the actual submission.
