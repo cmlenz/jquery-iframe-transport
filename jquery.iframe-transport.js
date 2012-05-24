@@ -25,9 +25,8 @@
 //         });
 //     });
 
-// The plugin will construct a hidden `<iframe>` element containing a copy of
-// the form the file field belongs to, will disable any form fields not
-// explicitly included, submit that form, and process the response.
+// The plugin will construct hidden `<iframe>` and `<form>` elements, add the
+// file field(s) to that form, submit the form, and process the response.
 
 // If you want to include other form fields in the form submission, include
 // them in the `data` option, and set the `processData` option to `false`:
@@ -48,10 +47,11 @@
 // As the transport does not have access to the HTTP headers of the server
 // response, it is not as simple to make use of the automatic content type
 // detection provided by jQuery as with regular XHR. If you can't set the
-// expected response data type (for example because it may vary), you will
-// need to employ a workaround on the server side: Send back an HTML document
-// containing just a `<textarea>` element with a `data-type` attribute that
-// specifies the MIME type, and put the actual payload in the textarea:
+// expected response data type (for example because it may vary depending on
+// the outcome of processing by the server), you will need to employ a
+// workaround on the server side: Send back an HTML document containing just a
+// `<textarea>` element with a `data-type` attribute that specifies the MIME
+// type, and put the actual payload in the textarea:
 
 //     <textarea data-type="application/json">
 //       {"ok": true, "message": "Thanks so much"}
