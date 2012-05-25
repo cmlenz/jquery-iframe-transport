@@ -181,7 +181,7 @@
             iframe.unbind("load").bind("load", function () {
               var doc = this.contentWindow ? this.contentWindow.document :
                 (this.contentDocument ? this.contentDocument : this.document),
-                root = doc.documentElement ? doc.documentElement : doc.body,
+                root = doc.body,
                 textarea = root.getElementsByTagName("textarea")[0],
                 type = textarea ? textarea.getAttribute("data-type") : null,
                 status = textarea ? textarea.getAttribute("data-status") : 200,
@@ -190,8 +190,9 @@
                   html: root.innerHTML,
                   text: type ?
                     textarea.value :
-                    root ? (root.textContent || root.innerText) : null
+                    $('<div/>').html(root.innerHTML).html()
                 };
+
               cleanUp();
               completeCallback(status, statusText, content, type ?
                 ("Content-Type: " + type) :
