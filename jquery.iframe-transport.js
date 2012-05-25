@@ -136,15 +136,16 @@
       // get serialized to a string.
       if (typeof(options.data) === "string" && options.data.length > 0) {
         $.error("data must not be serialized");
+      } else {
+        $.each($.param(options.data || {}).split('&'), function (index, el) {
+          el = el.split('=');
+          $("<input type='hidden' />").attr({
+            name: decodeURIComponent(el[0])
+          , value: decodeURIComponent(el[1].replace(/\+/g, '%20'))
+          }).appendTo(form);
+        });
       }
-      $.each(options.data || {}, function(name, value) {
-        if ($.isPlainObject(value)) {
-          name = value.name;
-          value = value.value;
-        }
-        $("<input type='hidden' />").attr({name:  name, value: value}).
-          appendTo(form);
-      });
+
 
       // Add a hidden `X-Requested-With` field with the value `IFrame` to the
       // field, to help server-side code to determine that the upload happened
