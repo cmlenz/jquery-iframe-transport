@@ -178,23 +178,28 @@
             // actual payload is embedded in a `<textarea>` element, and
             // prepares the required conversions to be made in that case.
             iframe.unbind("load").bind("load", function() {
-              var doc = this.contentWindow ? this.contentWindow.document :
-                (this.contentDocument ? this.contentDocument : this.document),
-                root = doc.documentElement ? doc.documentElement : doc.body,
-                textarea = root.getElementsByTagName("textarea")[0],
-                type = textarea ? textarea.getAttribute("data-type") : null,
-                status = textarea ? textarea.getAttribute("data-status") : 200,
-                statusText = textarea ? textarea.getAttribute("data-statusText") : "OK",
-                content = {
-                  html: root.innerHTML,
-                  text: type ?
-                    textarea.value :
-                    root ? (root.textContent || root.innerText) : null
-                };
-              cleanUp();
-              completeCallback(status, statusText, content, type ?
-                ("Content-Type: " + type) :
-                null);
+              try {
+                var doc = this.contentWindow ? this.contentWindow.document :
+                  (this.contentDocument ? this.contentDocument : this.document),
+                  root = doc.documentElement ? doc.documentElement : doc.body,
+                  textarea = root.getElementsByTagName("textarea")[0],
+                  type = textarea ? textarea.getAttribute("data-type") : null,
+                  status = textarea ? textarea.getAttribute("data-status") : 200,
+                  statusText = textarea ? textarea.getAttribute("data-statusText") : "OK",
+                  content = {
+                    html: root.innerHTML,
+                    text: type ?
+                      textarea.value :
+                      root ? (root.textContent || root.innerText) : null
+                  };
+                cleanUp();
+                completeCallback(status, statusText, content, type ?
+                  ("Content-Type: " + type) :
+                  null);
+              } catch() {
+                cleanUp();
+                completeCallback(500, "Internal Server Error");
+              }
             });
 
             // Now that the load handler has been set up, submit the form.
