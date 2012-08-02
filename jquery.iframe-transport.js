@@ -189,7 +189,7 @@
                   html: root.innerHTML,
                   text: type ?
                     textarea.value :
-                    root ? (root.textContent || root.innerText) : null
+                    root ? (root.innerText || root.textContent) : null
                 };
               cleanUp();
               completeCallback(status, statusText, content, type ?
