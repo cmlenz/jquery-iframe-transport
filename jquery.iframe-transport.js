@@ -118,7 +118,8 @@
         return files.get(idx);
       });
       form.remove();
-      iframe.attr("src", "javascript:false;").remove();
+      iframe.bind("load", function() { iframe.remove(); });
+      iframe.attr("src", "javascript:false;");
     }
 
     // Remove "iframe" from the data types list so that further processing is
