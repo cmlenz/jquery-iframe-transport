@@ -114,9 +114,7 @@
     // and should revert all changes made to the page to enable the
     // submission via this transport.
     function cleanUp() {
-      markers.replaceWith(function(idx) {
-        return files.get(idx);
-      });
+      markers.prop('disabled', false);
       form.remove();
       iframe.bind("load", function() { iframe.remove(); });
       iframe.attr("src", "javascript:false;");
