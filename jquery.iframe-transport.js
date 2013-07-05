@@ -108,7 +108,8 @@
         iframe = null,
         name = "iframe-" + $.now(),
         files = $(options.files).filter(":file:enabled"),
-        markers = null;
+        markers = null,
+        accepts;
 
     // This function gets called after a successful submission or an abortion
     // and should revert all changes made to the page to enable the
@@ -152,6 +153,15 @@
       // through this transport.
       $("<input type='hidden' value='IFrame' name='X-Requested-With' />").
         appendTo(form);
+
+      // Borrowed straight from the JQuery source
+      // Provides a way of specifying the accepted data type similar to HTTP_ACCEPTS
+      accepts = options.dataTypes[ 0 ] && options.accepts[ options.dataTypes[0] ] ?
+        options.accepts[ options.dataTypes[0] ] + ( options.dataTypes[ 0 ] !== "*" ? ", */*; q=0.01" : "" ) :
+        options.accepts[ "*" ]
+
+      $("<input type='hidden' name='X-Http-Accept'>")
+        .attr("value", accepts).appendTo(form);
 
       // Move the file fields into the hidden form, but first remember their
       // original locations in the document by replacing them with disabled
