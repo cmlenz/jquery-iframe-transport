@@ -1,14 +1,20 @@
 var formidable = require("formidable"),
     http = require("http"),
     paperboy = require("paperboy"),
-    path = require("path");
+    path = require("path"),
+    url = require("url");
 
 http.createServer(function(req, res) {
-  if (req.url == "/upload" && req.method.toUpperCase() == "POST") {
+  var urlparts = url.parse(req.url);
+  if (urlparts.pathname == "/upload" && req.method.toUpperCase() == "POST") {
     var form = new formidable.IncomingForm(),
-        files = [];
+        files = [],
+        comment = null;
     form.on("field", function(name, value) {
       console.log(name + ": " + value);
+      if (name == "comment") {
+        comment = value;
+      }
     });
     form.on("file", function(name, file) {
       console.log(file);
@@ -16,7 +22,7 @@ http.createServer(function(req, res) {
     });
     form.on("end", function() {
       res.writeHead(200, {"Content-Type": "application/json"});
-      res.end(JSON.stringify({files: files}));
+      res.end(JSON.stringify({files: files, comment: comment}));
     });
     form.parse(req);
   } else if (req.url == "/jquery.iframe-transport.js") {

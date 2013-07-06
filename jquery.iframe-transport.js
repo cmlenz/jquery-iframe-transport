@@ -126,6 +126,11 @@
     // (unsupported) conversion from "iframe" to the actual type.
     options.dataTypes.shift();
 
+    // Use the data from the original AJAX options, as it doesn't seem to be 
+    // copied over since jQuery 1.7.
+    // See https://github.com/cmlenz/jquery-iframe-transport/issues/6
+    options.data = origOptions.data;
+
     if (files.length) {
       form = $("<form enctype='multipart/form-data' method='post'></form>").
         hide().attr({action: options.url, target: name});

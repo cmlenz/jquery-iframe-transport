@@ -12,7 +12,9 @@ form { background: #eee; border: 1px inset #ccc; margin: 1em 0;
   padding: 5px 0 5px 25px;
 }
 form.loading { background: #eee url(spinner.gif) 5px 50% no-repeat; }
+textarea { vertical-align: text-top; }
 
 #filelist { list-style: none; margin: 1em 0; padding: 0; }
 #filelist li { padding-left: 25px; }
 #filelist li:nth-child(odd) { background: #f4f4f4; }
+#filelist li .comment { font-style: italic; margin: 0; }
