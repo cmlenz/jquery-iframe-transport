@@ -7,7 +7,11 @@ http.createServer(function(req, res) {
   if (req.url == "/upload" && req.method.toUpperCase() == "POST") {
     var form = new formidable.IncomingForm(),
         files = [];
-    form.on("file", function(field, file) {
+    form.on("field", function(name, value) {
+      console.log(name + ": " + value);
+    });
+    form.on("file", function(name, file) {
+      console.log(file);
       files.push(file);
     });
     form.on("end", function() {
