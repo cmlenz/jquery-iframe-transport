@@ -109,13 +109,13 @@
         name = "iframe-" + $.now(),
         files = $(options.files).filter(":file:enabled"),
         markers = null,
-        accepts;
+        accepts = null;
 
     // This function gets called after a successful submission or an abortion
     // and should revert all changes made to the page to enable the
     // submission via this transport.
     function cleanUp() {
-      markers.prop('disabled', false);
+      markers.prop("disabled", false);
       form.remove();
       iframe.one("load", function() { iframe.remove(); });
       iframe.attr("src", "javascript:false;");
@@ -152,14 +152,17 @@
       $("<input type='hidden' value='IFrame' name='X-Requested-With' />").
         appendTo(form);
 
-      // Borrowed straight from the JQuery source
-      // Provides a way of specifying the accepted data type similar to HTTP_ACCEPTS
-      accepts = options.dataTypes[ 0 ] && options.accepts[ options.dataTypes[0] ] ?
-        options.accepts[ options.dataTypes[0] ] + ( options.dataTypes[ 0 ] !== "*" ? ", */*; q=0.01" : "" ) :
-        options.accepts[ "*" ]
-
-      $("<input type='hidden' name='X-Http-Accept'>")
-        .attr("value", accepts).appendTo(form);
+      // Borrowed straight from the JQuery source.
+      // Provides a way of specifying the accepted data type similar to the
+      // HTTP "Accept" header
+      if (options.dataTypes[0] && options.accepts[options.dataTypes[0]]) {
+        accepts = options.accepts[options.dataTypes[0]] +
+                  (options.dataTypes[0] !== "*" ? ", */*; q=0.01" : "");
+      } else {
+        accepts = options.accepts["*"];
+      }
+      $("<input type='hidden' name='X-HTTP-Accept'>").
+        attr("value", accepts).appendTo(form);
 
       // Move the file fields into the hidden form, but first remember their
       // original locations in the document by replacing them with disabled
