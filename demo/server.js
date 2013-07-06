@@ -1,12 +1,10 @@
 var formidable = require("formidable"),
     http = require("http"),
     paperboy = require("paperboy"),
-    path = require("path"),
-    url = require("url");
+    path = require("path");
 
 http.createServer(function(req, res) {
-  var urlparts = url.parse(req.url);
-  if (urlparts.pathname == "/upload" && req.method.toUpperCase() == "POST") {
+  if (req.url == "/upload" && req.method.toUpperCase() == "POST") {
     var form = new formidable.IncomingForm(),
         files = [],
         comment = null;

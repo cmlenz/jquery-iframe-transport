@@ -96,6 +96,7 @@
   // switches to the "iframe" data type if it is `true`.
   $.ajaxPrefilter(function(options, origOptions, jqXHR) {
     if (options.iframe) {
+      options.originalURL = options.url;
       return "iframe";
     }
   });
@@ -133,7 +134,7 @@
 
     if (files.length) {
       form = $("<form enctype='multipart/form-data' method='post'></form>").
-        hide().attr({action: options.url, target: name});
+        hide().attr({action: options.originalURL, target: name});
 
       // If there is any additional data specified via the `data` option,
       // we add it as hidden fields to the form. This (currently) requires
