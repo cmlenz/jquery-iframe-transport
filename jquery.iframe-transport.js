@@ -116,7 +116,10 @@
     // and should revert all changes made to the page to enable the
     // submission via this transport.
     function cleanUp() {
-      markers.prop("disabled", false);
+      files.each(function (i, file) {
+        var $file = $(file);
+        $file.data("clone").replaceWith($file);
+      });
       form.remove();
       iframe.one("load", function() { iframe.remove(); });
       iframe.attr("src", "javascript:false;");
@@ -175,7 +178,10 @@
       // clones. This should also avoid introducing unwanted changes to the
       // page layout during submission.
       markers = files.after(function(idx) {
-        return $(this).clone().prop("disabled", true);
+        var $this = $(this),
+            $clone = $this.clone().prop("disabled", true);
+        $this.data("clone", $clone);
+        return $clone;
       }).next();
       files.appendTo(form);
 
