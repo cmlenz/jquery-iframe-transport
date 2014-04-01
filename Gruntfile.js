@@ -45,6 +45,39 @@ module.exports = function (grunt) {
         base: 'docs'
       },
       src: ['**']
+    },
+    connect: {
+      server: {
+        options: {
+          port: 3000,
+          base: 'demo',
+          keepalive: true,
+          middleware: function(connect, options, middlewares) {
+            var multiparty = require('multiparty'),
+                util = require('util');
+            middlewares.unshift(function(req, res, next) {
+              if (req.url === '/jquery.iframe-transport.js') {
+                return connect.static(__dirname)(req, res, next);
+              }
+              if (req.url !== '/upload' || req.method.toUpperCase() !== 'POST') {
+                return next();
+              }
+
+              var form = new multiparty.Form();
+              form.parse(req, function(error, fields, files) {
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                setTimeout(function() {
+                  res.end(JSON.stringify({
+                    files: files['file'],
+                    comment: fields['comment']
+                  }));
+                }, 500);
+              });
+            });
+            return middlewares;
+          }
+        }
+      }
     }
   });
 
@@ -56,5 +89,6 @@ module.exports = function (grunt) {
   }
 
   grunt.registerTask('default', ['jshint', 'uglify']);
+  grunt.registerTask('demo', ['connect']);
   grunt.registerTask('doc', ['docco', 'copy:doc', 'gh-pages']);
 };
