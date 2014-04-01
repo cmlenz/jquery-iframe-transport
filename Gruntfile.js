@@ -45,6 +45,12 @@ module.exports = function (grunt) {
           output: 'docs/'
         }
       }
+    },
+    'gh-pages': {
+      options: {
+        base: 'docs'
+      },
+      src: ['**']
     }
   });
 
