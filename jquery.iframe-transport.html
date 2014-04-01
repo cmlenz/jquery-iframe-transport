@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>jquery.iframe-transport.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>jquery.iframe-transport.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>This <a href="http://jquery.com/">jQuery</a> plugin implements an <code>&lt;iframe&gt;</code>
+<a href="http://api.jquery.com/extending-ajax/#Transports">transport</a> so that
+<code>$.ajax()</code> calls support the uploading of files using standard HTML file
+input fields. This is done by switching the exchange from <code>XMLHttpRequest</code>
+to a hidden <code>iframe</code> element containing a form that is submitted.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>The <a href="http://github.com/cmlenz/jquery-iframe-transport">source for the plugin</a>
+is available on <a href="http://github.com/">Github</a> and licensed under the <a href="http://github.com/cmlenz/jquery-iframe-transport">MIT
+license</a>.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <h2 id="usage">Usage</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>To use this plugin, you simply add an <code>iframe</code> option with the value <code>true</code>
+to the Ajax settings an <code>$.ajax()</code> call, and specify the file fields to
+include in the submssion using the <code>files</code> option, which can be a selector,
+jQuery object, or a list of DOM elements containing one or more
+<code>&lt;input type=&quot;file&quot;&gt;</code> elements:</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <pre><code>$(<span class="hljs-string">"#myform"</span>).submit(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+    $.ajax(<span class="hljs-keyword">this</span>.action, {
+        files: $(<span class="hljs-string">":file"</span>, <span class="hljs-keyword">this</span>),
+        iframe: <span class="hljs-literal">true</span>
+    }).complete(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data)</span> {</span>
+        console.log(data);
+    });
+});
+</code></pre>
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>The plugin will construct hidden <code>&lt;iframe&gt;</code> and <code>&lt;form&gt;</code> elements, add the
+file field(s) to that form, submit the form, and process the response.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>If you want to include other form fields in the form submission, include
+them in the <code>data</code> option, and set the <code>processData</code> option to <code>false</code>:</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <pre><code>$(<span class="hljs-string">"#myform"</span>).submit(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+    $.ajax(<span class="hljs-keyword">this</span>.action, {
+        data: $(<span class="hljs-string">":text"</span>, <span class="hljs-keyword">this</span>).serializeArray(),
+        files: $(<span class="hljs-string">":file"</span>, <span class="hljs-keyword">this</span>),
+        iframe: <span class="hljs-literal">true</span>,
+        processData: <span class="hljs-literal">false</span>
+    }).complete(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data)</span> {</span>
+        console.log(data);
+    });
+});
+</code></pre>
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <h3 id="response-data-types">Response Data Types</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>As the transport does not have access to the HTTP headers of the server
+response, it is not as simple to make use of the automatic content type
+detection provided by jQuery as with regular XHR. If you can’t set the
+expected response data type (for example because it may vary depending on
+the outcome of processing by the server), you will need to employ a
+workaround on the server side: Send back an HTML document containing just a
+<code>&lt;textarea&gt;</code> element with a <code>data-type</code> attribute that specifies the MIME
+type, and put the actual payload in the textarea:</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <pre><code>&lt;textarea data-type=<span class="hljs-string">"application/json"</span>&gt;
+  {<span class="hljs-string">"ok"</span>: <span class="hljs-literal">true</span>, <span class="hljs-string">"message"</span>: <span class="hljs-string">"Thanks so much"</span>}
+&lt;<span class="hljs-regexp">/textarea&gt;</span>
+</code></pre>
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>The iframe transport plugin will detect this and pass the value of the
+<code>data-type</code> attribute on to jQuery as if it was the “Content-Type” response
+header, thereby enabling the same kind of conversions that jQuery applies
+to regular responses. For the example above you should get a Javascript
+object as the <code>data</code> parameter of the <code>complete</code> callback, with the
+properties <code>ok: true</code> and <code>message: &quot;Thanks so much&quot;</code>.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <h3 id="handling-server-errors">Handling Server Errors</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Another problem with using an <code>iframe</code> for file uploads is that it is
+impossible for the javascript code to determine the HTTP status code of the
+servers response. Effectively, all of the calls you make will look like they
+are getting successful responses, and thus invoke the <code>done()</code> or
+<code>complete()</code> callbacks. You can only determine communicate problems using
+the content of the response payload. For example, consider using a JSON
+response such as the following to indicate a problem with an uploaded file:</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <pre><code>&lt;textarea data-type=<span class="hljs-string">"application/json"</span>&gt;
+  {<span class="hljs-string">"ok"</span>: <span class="hljs-literal">false</span>, <span class="hljs-string">"message"</span>: <span class="hljs-string">"Please only upload reasonably sized files."</span>}
+&lt;<span class="hljs-regexp">/textarea&gt;</span>
+</code></pre>
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <h3 id="compatibility">Compatibility</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>This plugin has primarily been tested on Safari 5 (or later), Firefox 4 (or
+later), and Internet Explorer (all the way back to version 6). While I
+haven’t found any issues with it so far, I’m fairly sure it still doesn’t
+work around all the quirks in all different browsers. But the code is still
+pretty simple overall, so you should be able to fix it and contribute a
+patch :)</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <h2 id="annotated-source">Annotated Source</h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, undefined)</span> {</span>
+<span class="hljs-pi">  "use strict"</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Register a prefilter that checks whether the <code>iframe</code> option is set, and
+switches to the “iframe” data type if it is <code>true</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $.ajaxPrefilter(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options, origOptions, jqXHR)</span> {</span>
+    <span class="hljs-keyword">if</span> (options.iframe) {
+      options.originalURL = options.url;
+      <span class="hljs-keyword">return</span> <span class="hljs-string">"iframe"</span>;
+    }
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Register a transport for the “iframe” data type. It will only activate
+when the “files” option has been set to a non-empty list of enabled file
+inputs.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $.ajaxTransport(<span class="hljs-string">"iframe"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options, origOptions, jqXHR)</span> {</span>
+    <span class="hljs-keyword">var</span> form = <span class="hljs-literal">null</span>,
+        iframe = <span class="hljs-literal">null</span>,
+        name = <span class="hljs-string">"iframe-"</span> + $.now(),
+        files = $(options.files).filter(<span class="hljs-string">":file:enabled"</span>),
+        markers = <span class="hljs-literal">null</span>,
+        accepts = <span class="hljs-literal">null</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>This function gets called after a successful submission or an abortion
+and should revert all changes made to the page to enable the
+submission via this transport.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">cleanUp</span><span class="hljs-params">()</span> {</span>
+      markers.prop(<span class="hljs-string">"disabled"</span>, <span class="hljs-literal">false</span>);
+      form.remove();
+      iframe.one(<span class="hljs-string">"load"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> iframe.remove(); });
+      iframe.attr(<span class="hljs-string">"src"</span>, <span class="hljs-string">"javascript:false;"</span>);
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Remove “iframe” from the data types list so that further processing is
+based on the content type returned by the server, without attempting an
+(unsupported) conversion from “iframe” to the actual type.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    options.dataTypes.shift();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Use the data from the original AJAX options, as it doesn’t seem to be 
+copied over since jQuery 1.7.
+See <a href="https://github.com/cmlenz/jquery-iframe-transport/issues/6">https://github.com/cmlenz/jquery-iframe-transport/issues/6</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    options.data = origOptions.data;
+
+    <span class="hljs-keyword">if</span> (files.length) {
+      form = $(<span class="hljs-string">"&lt;form enctype='multipart/form-data' method='post'&gt;&lt;/form&gt;"</span>).
+        hide().attr({action: options.originalURL, target: name});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>If there is any additional data specified via the <code>data</code> option,
+we add it as hidden fields to the form. This (currently) requires
+the <code>processData</code> option to be set to false so that the data doesn’t
+get serialized to a string.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span>(options.data) === <span class="hljs-string">"string"</span> &amp;&amp; options.data.length &gt; <span class="hljs-number">0</span>) {
+        $.error(<span class="hljs-string">"data must not be serialized"</span>);
+      }
+      $.each(options.data || {}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, value)</span> {</span>
+        <span class="hljs-keyword">if</span> ($.isPlainObject(value)) {
+          name = value.name;
+          value = value.value;
+        }
+        $(<span class="hljs-string">"&lt;input type='hidden' /&gt;"</span>).attr({name:  name, value: value}).
+          appendTo(form);
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Add a hidden <code>X-Requested-With</code> field with the value <code>IFrame</code> to the
+field, to help server-side code to determine that the upload happened
+through this transport.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $(<span class="hljs-string">"&lt;input type='hidden' value='IFrame' name='X-Requested-With' /&gt;"</span>).
+        appendTo(form);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Borrowed straight from the JQuery source.
+Provides a way of specifying the accepted data type similar to the
+HTTP “Accept” header</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (options.dataTypes[<span class="hljs-number">0</span>] &amp;&amp; options.accepts[options.dataTypes[<span class="hljs-number">0</span>]]) {
+        accepts = options.accepts[options.dataTypes[<span class="hljs-number">0</span>]] +
+                  (options.dataTypes[<span class="hljs-number">0</span>] !== <span class="hljs-string">"*"</span> ? <span class="hljs-string">", */*; q=0.01"</span> : <span class="hljs-string">""</span>);
+      } <span class="hljs-keyword">else</span> {
+        accepts = options.accepts[<span class="hljs-string">"*"</span>];
+      }
+      $(<span class="hljs-string">"&lt;input type='hidden' name='X-HTTP-Accept'&gt;"</span>).
+        attr(<span class="hljs-string">"value"</span>, accepts).appendTo(form);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>Move the file fields into the hidden form, but first remember their
+original locations in the document by replacing them with disabled
+clones. This should also avoid introducing unwanted changes to the
+page layout during submission.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      markers = files.after(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(idx)</span> {</span>
+        <span class="hljs-keyword">return</span> $(<span class="hljs-keyword">this</span>).clone().prop(<span class="hljs-string">"disabled"</span>, <span class="hljs-literal">true</span>);
+      }).next();
+      files.appendTo(form);
+
+      <span class="hljs-keyword">return</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>The <code>send</code> function is called by jQuery when the request should be
+sent.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        send: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(headers, completeCallback)</span> {</span>
+          iframe = $(<span class="hljs-string">"&lt;iframe src='javascript:false;' name='"</span> + name +
+            <span class="hljs-string">"' id='"</span> + name + <span class="hljs-string">"' style='display:none'&gt;&lt;/iframe&gt;"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>The first load event gets fired after the iframe has been injected
+into the DOM, and is used to prepare the actual submission.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          iframe.one(<span class="hljs-string">"load"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>The second load event gets fired when the response to the form
+submission is received. The implementation detects whether the
+actual payload is embedded in a <code>&lt;textarea&gt;</code> element, and
+prepares the required conversions to be made in that case.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            iframe.one(<span class="hljs-string">"load"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+              <span class="hljs-keyword">var</span> doc = <span class="hljs-keyword">this</span>.contentWindow ? <span class="hljs-keyword">this</span>.contentWindow.document :
+                (<span class="hljs-keyword">this</span>.contentDocument ? <span class="hljs-keyword">this</span>.contentDocument : <span class="hljs-keyword">this</span>.document),
+                root = doc.documentElement ? doc.documentElement : doc.body,
+                textarea = root.getElementsByTagName(<span class="hljs-string">"textarea"</span>)[<span class="hljs-number">0</span>],
+                type = textarea &amp;&amp; textarea.getAttribute(<span class="hljs-string">"data-type"</span>) || <span class="hljs-literal">null</span>,
+                status = textarea &amp;&amp; textarea.getAttribute(<span class="hljs-string">"data-status"</span>) || <span class="hljs-number">200</span>,
+                statusText = textarea &amp;&amp; textarea.getAttribute(<span class="hljs-string">"data-statusText"</span>) || <span class="hljs-string">"OK"</span>,
+                content = {
+                  html: root.innerHTML,
+                  text: type ?
+                    textarea.value :
+                    root ? (root.textContent || root.innerText) : <span class="hljs-literal">null</span>
+                };
+              cleanUp();
+              completeCallback(status, statusText, content, type ?
+                (<span class="hljs-string">"Content-Type: "</span> + type) :
+                <span class="hljs-literal">null</span>);
+            });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Now that the load handler has been set up, submit the form.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            form[<span class="hljs-number">0</span>].submit();
+          });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>After everything has been set up correctly, the form and iframe
+get injected into the DOM so that the submission can be
+initiated.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          $(<span class="hljs-string">"body"</span>).append(form, iframe);
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>The <code>abort</code> function is called by jQuery when the request should be
+aborted.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        abort: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+          <span class="hljs-keyword">if</span> (iframe !== <span class="hljs-literal">null</span>) {
+            iframe.unbind(<span class="hljs-string">"load"</span>).attr(<span class="hljs-string">"src"</span>, <span class="hljs-string">"javascript:false;"</span>);
+            cleanUp();
+          }
+        }
+
+      };
+    }
+  });
+
+})(jQuery);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
