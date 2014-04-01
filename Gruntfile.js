@@ -25,19 +25,6 @@ module.exports = function (grunt) {
         }
       }
     },
-    compare_size: {
-      files: [
-        'build/jquery.iframe-transport-<%= pkg.version %>.min.js',
-        'jquery.iframe-transport.js'
-      ],
-      options: {
-        compress: {
-          gz: function (fileContents) {
-            return require('gzip-js').zip(fileContents, {}).length;
-          }
-        }
-      }
-    },
     docco: {
       debug: {
         src: ['jquery.iframe-transport.js'],
@@ -61,5 +48,6 @@ module.exports = function (grunt) {
     }
   }
 
-  grunt.registerTask('default', ['jshint', 'uglify', 'compare_size']);
+  grunt.registerTask('default', ['jshint', 'uglify']);
+  grunt.registerTask('doc', ['docco', 'gh-pages']);
 };
