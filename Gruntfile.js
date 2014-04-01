@@ -33,6 +33,13 @@ module.exports = function (grunt) {
         }
       }
     },
+    copy: {
+      doc: {
+        src: 'docs/jquery.iframe-transport.html',
+        dest: 'docs/index.html',
+        nonull: true
+      }
+    },
     'gh-pages': {
       options: {
         base: 'docs'
@@ -49,5 +56,5 @@ module.exports = function (grunt) {
   }
 
   grunt.registerTask('default', ['jshint', 'uglify']);
-  grunt.registerTask('doc', ['docco', 'gh-pages']);
+  grunt.registerTask('doc', ['docco', 'copy:doc', 'gh-pages']);
 };
