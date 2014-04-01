@@ -1,0 +1,18 @@
+{
+  "browser": true,
+  "camelcase": true,
+  "curly": true,
+  "eqeqeq": true,
+  "eqnull": true,
+  "es3": true,
+  "expr": true,
+  "evil": true,
+  "indent": 2,
+  "newcap": true,
+  "noarg": true,
+  "scripturl": true,
+  "undef": true,
+  "globals": {
+    "jQuery": true
+  }
+}

@@ -5,8 +5,8 @@
 // to a hidden `iframe` element containing a form that is submitted.
 
 // The [source for the plugin](http://github.com/cmlenz/jquery-iframe-transport)
-// is available on [Github](http://github.com/) and dual licensed under the MIT
-// or GPL Version 2 licenses.
+// is available on [Github](http://github.com/) and licensed under the [MIT
+// license](http://github.com/cmlenz/jquery-iframe-transport).
 
 // ## Usage
 
