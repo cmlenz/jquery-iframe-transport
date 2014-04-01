@@ -1,12 +1,12 @@
-// This [jQuery](http://jquery.com/) plugin implements an `<iframe>`
-// [transport](http://api.jquery.com/extending-ajax/#Transports) so that
+// This [jQuery](https://jquery.com/) plugin implements an `<iframe>`
+// [transport](https://api.jquery.com/jQuery.ajax/#extending-ajax) so that
 // `$.ajax()` calls support the uploading of files using standard HTML file
 // input fields. This is done by switching the exchange from `XMLHttpRequest`
 // to a hidden `iframe` element containing a form that is submitted.
 
-// The [source for the plugin](http://github.com/cmlenz/jquery-iframe-transport)
-// is available on [Github](http://github.com/) and licensed under the [MIT
-// license](http://github.com/cmlenz/jquery-iframe-transport).
+// The [source for the plugin](https://github.com/cmlenz/jquery-iframe-transport)
+// is available on [Github](https://github.com/) and licensed under the [MIT
+// license](https://github.com/cmlenz/jquery-iframe-transport/blob/master/LICENSE).
 
 // ## Usage
 
