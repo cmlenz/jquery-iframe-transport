@@ -70,9 +70,9 @@
 // impossible for the javascript code to determine the HTTP status code of the
 // servers response. Effectively, all of the calls you make will look like they
 // are getting successful responses, and thus invoke the `done()` or
-// `complete()` callbacks. You can only determine communicate problems using
-// the content of the response payload. For example, consider using a JSON
-// response such as the following to indicate a problem with an uploaded file:
+// `complete()` callbacks. You can only communicate problems using the content
+// of the response payload. For example, consider using a JSON response such as
+// the following to indicate a problem with an uploaded file:
 
 //     <textarea data-type="application/json">
 //       {"ok": false, "message": "Please only upload reasonably sized files."}
