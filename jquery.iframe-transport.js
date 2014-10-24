@@ -151,8 +151,16 @@
           name = value.name;
           value = value.value;
         }
-        $("<input type='hidden' />").attr({name:  name, value: value}).
-          appendTo(form);
+        if ($.isArray(value)) {
+          $.each(value, function(itm, v) {
+            var n = name + "[]";
+            $("<input type='hidden' />").attr({name: n, value: v}).
+              appendTo(form);
+          });
+        } else {
+          $("<input type='hidden' />").attr({name:  name, value: value}).
+            appendTo(form);
+        }
       });
 
       // Add a hidden `X-Requested-With` field with the value `IFrame` to the
