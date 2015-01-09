@@ -116,7 +116,7 @@
     // and should revert all changes made to the page to enable the
     // submission via this transport.
     function cleanUp() {
-      files.each(function(i, file) {
+      files.each(function (i, file) {
         var $file = $(file);
         $file.data("clone").replaceWith($file);
       });
