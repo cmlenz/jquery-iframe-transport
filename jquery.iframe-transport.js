@@ -96,20 +96,27 @@
   // switches to the "iframe" data type if it is `true`.
   $.ajaxPrefilter(function(options, origOptions, jqXHR) {
     if (options.iframe) {
-      options.originalURL = options.url;
+      // Make sure jQuery doesn't mess with our urls or data.
+      if (/^(?:GET|HEAD)$/.test(options.type)) {
+        options.type = 'IFRAME' + options.type;
+      }
+      options.data = origOptions.data;
       return "iframe";
     }
   });
+
+  var incr = 0; // avoid double iframes with the same name
 
   // Register a transport for the "iframe" data type. It will only activate
   // when the "files" option has been set to a non-empty list of enabled file
   // inputs.
   $.ajaxTransport("iframe", function(options, origOptions, jqXHR) {
-    var form = null,
-        iframe = null,
-        name = "iframe-" + $.now(),
+    var form = $(),
+        iframe = $(),
+        name = "iframe-" + $.now() + '-' + incr++,
         files = $(options.files).filter(":file:enabled"),
-        markers = null,
+        markers = $(),
+        requestType = options.type,
         accepts = null;
 
     // This function gets called after a successful submission or an abortion
@@ -118,8 +125,12 @@
     function cleanUp() {
       markers.prop("disabled", false);
       form.remove();
-      iframe.one("load", function() { iframe.remove(); });
+      iframe.off("load").one("load", function() { iframe.remove(); });
       iframe.attr("src", "javascript:false;");
+    }
+
+    if (/^IFRAME(?:GET|HEAD)$/.test(requestType)) {
+      requestType = requestType.replace('IFRAME','');
     }
 
     // Remove "iframe" from the data types list so that further processing is
@@ -127,14 +138,9 @@
     // (unsupported) conversion from "iframe" to the actual type.
     options.dataTypes.shift();
 
-    // Use the data from the original AJAX options, as it doesn't seem to be 
-    // copied over since jQuery 1.7.
-    // See https://github.com/cmlenz/jquery-iframe-transport/issues/6
-    options.data = origOptions.data;
-
-    if (files.length) {
-      form = $("<form enctype='multipart/form-data' method='post'></form>").
-        hide().attr({action: options.originalURL, target: name});
+    if (true || files.length) { // NOTE(geophree): we always want this
+      form = $("<form enctype='multipart/form-data' method='" + requestType + "'></form>").
+        hide().attr({action: options.url, target: name});
 
       // If there is any additional data specified via the `data` option,
       // we add it as hidden fields to the form. This (currently) requires
@@ -143,7 +149,15 @@
       if (typeof(options.data) === "string" && options.data.length > 0) {
         $.error("data must not be serialized");
       }
+
       $.each(options.data || {}, function(name, value) {
+        if (value && value.nodeType) {
+          if (!$(value).is(':input:not(:disabled)')) {
+            return;
+          }
+          name = $(value).attr('name');
+          value = $(value).val();
+        }
         if ($.isPlainObject(value)) {
           name = value.name;
           value = value.value;
@@ -169,6 +183,12 @@
       }
       $("<input type='hidden' name='X-HTTP-Accept'>").
         attr("value", accepts).appendTo(form);
+
+      // Add a cache-busting param if needed
+      if (false === options.cache && /^(?:GET|HEAD)$/.test(requestType)) {
+        $("<input>").attr({type: 'hidden', name: '_', value: $.now()}).
+          appendTo(form);
+      }
 
       // Move the file fields into the hidden form, but first remember their
       // original locations in the document by replacing them with disabled
@@ -227,13 +247,7 @@
 
         // The `abort` function is called by jQuery when the request should be
         // aborted.
-        abort: function() {
-          if (iframe !== null) {
-            iframe.unbind("load").attr("src", "javascript:false;");
-            cleanUp();
-          }
-        }
-
+        abort: cleanUp
       };
     }
   });
