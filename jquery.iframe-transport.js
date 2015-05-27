@@ -222,7 +222,7 @@
             });
 
             // Now that the load handler has been set up, submit the form.
-            form[0].submit();
+            form.submit();
           });
 
           // After everything has been set up correctly, the form and iframe
