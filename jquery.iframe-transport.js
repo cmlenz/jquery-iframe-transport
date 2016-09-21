@@ -130,7 +130,7 @@
     // (unsupported) conversion from "iframe" to the actual type.
     options.dataTypes.shift();
 
-    // Use the data from the original AJAX options, as it doesn't seem to be 
+    // Use the data from the original AJAX options, as it doesn't seem to be
     // copied over since jQuery 1.7.
     // See https://github.com/cmlenz/jquery-iframe-transport/issues/6
     options.data = origOptions.data;
@@ -201,9 +201,7 @@
           iframe = $("<iframe src='javascript:false;' name='" + name +
             "' id='" + name + "' style='display:none'></iframe>");
 
-          // The first load event gets fired after the iframe has been injected
-          // into the DOM, and is used to prepare the actual submission.
-          iframe.one("load", function() {
+          var onload = function(iframe) {
 
             // The second load event gets fired when the response to the form
             // submission is received. The implementation detects whether the
@@ -231,12 +229,15 @@
 
             // Now that the load handler has been set up, submit the form.
             form[0].submit();
-          });
+          };
 
           // After everything has been set up correctly, the form and iframe
           // get injected into the DOM so that the submission can be
           // initiated.
           $("body").append(form, iframe);
+          // Firefox 49 was not firing the load event when appended
+          // append() is synchronous so we can just finish the set up here
+          onload(iframe);
         },
 
         // The `abort` function is called by jQuery when the request should be
