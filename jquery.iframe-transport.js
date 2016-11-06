@@ -215,6 +215,10 @@
                     textarea.value :
                     root ? (root.textContent || root.innerText) : null
                 };
+              // This fixes bug for google-chrome, some plugin accidentally appends html comment into json
+              if(content.text){
+                content.text = content.text.replace(/^<!--.*?-->/g, '');
+              }
               cleanUp();
               completeCallback(status, statusText, content, type ?
                 ("Content-Type: " + type) :
