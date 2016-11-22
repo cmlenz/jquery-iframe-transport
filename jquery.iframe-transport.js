@@ -181,6 +181,7 @@
         var $this = $(this),
             $clone = $this.clone().prop("disabled", true);
         $this.data("clone", $clone);
+        $this.removeAttr('form'); // remove possible leftover form attribute
         return $clone;
       }).next();
       files.appendTo(form);
